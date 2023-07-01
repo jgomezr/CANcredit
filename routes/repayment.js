@@ -13,13 +13,15 @@ route.get('/repay', (req, res)=> {
   async function main () {
     const Wave3 = await hre.ethers.getContractFactory("celoWave3");
     const wave3 = await Wave3.attach(contract);
-    await wave3.loanRepayments(agent, amountphp, date);
-    console.log(
-        `Remaining php ${await wave3.remainingPhp()}`
-      );
-      res.send({
-        'result': wave3.address
-      });
+    
+    try{
+      await wave3.loanRepayments(agent, amountphp, date);
+      console.log(`Repaid contract: ${await wave3.address}`);
+      res.send({'result': wave3.address});
+    }catch (error) {
+      console.error("Error during repayment:", error);
+      res.send({'result': false});
+    }
 
   }
   
